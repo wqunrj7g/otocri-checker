@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>オトクリ周回チェッカー</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101522;
+  color: white;
+  font-family: sans-serif;
+}
+h1 { color: #75d9ff; }
+.card {
+  background: #202b40;
+  padding: 16px;
+  border-radius: 14px;
+  margin: 12px 0;
+}
+.value {
+  font-size: 28px;
+  font-weight: bold;
+}
+small { color: #aab8cc; }
+button {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: #269dd2;
+  color: white;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+<h1>🎮 オトクリ周回チェッカー</h1>
+<p id="status">接続準備中...</p>
+<button onclick="loadData()">更新する</button>
+
+<div class="card">
+  <small>総記録数</small>
+  <div class="value" id="total">0</div>
+</div>
+
+<div class="card">
+  <small>勝利数</small>
+  <div class="value" id="wins">0</div>
+</div>
+
+<div class="card">
+  <small>敗北数</small>
+  <div class="value" id="losses">0</div>
+</div>
+
+<div class="card">
+  <small>勝率</small>
+  <div class="value" id="rate">0%</div>
+</div>
+
+<div class="card">
+  <small>Yポイント合計</small>
+  <div class="value" id="points">0</div>
+</div>
+
+<div class="card">
+  <small>Yマネー合計</small>
+  <div class="value" id="money">0</div>
+</div>
+
+<div class="card">
+  <h3>周回履歴</h3>
+  <div id="history">まだ記録がありません</div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://supabase.com/dashboard/project/frrlztkpsfzqerjetvmy/settings/api-keys;
+const SUPABASE_KEY = "sb_publishable_Dg-xtv361dQHsdTXgsc-_w_Ks8yXR-e;
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function loadData() {
+  const status = document.getElementById("status");
+  status.textContent = "読み込み中...";
+
+  const { data, error } = await db
+    .from("lap records")
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(500);
+
+  if (error) {
+    status.textContent = "エラー: " + error.message;
+    return;
+  }
+
+  const rows = data || [];
+  const wins = rows.filter(x =>
+    String(x.result).toLowerCase() === "win" ||
+    String(x.result) === "勝利" ||
+    String(x.result) === "クリア"
+  ).length;
+
+  const losses = rows.filter(x =>
+    String(x.result).toLowerCase() === "lose" ||
+    String(x.result) === "敗北"
+  ).length;
+
+  const sum = key => rows.reduce(
+    (total, x) => total + (Number(x[key]) || 0), 0
+  );
+
+  document.getElementById("total").textContent = rows.length;
+  document.getElementById("wins").textContent = wins;
+  document.getElementById("losses").textContent = losses;
+  document.getElementById("rate").textContent =
+    (wins + losses ? (wins / (wins + losses) * 100).toFixed(1) : 0) + "%";
+  document.getElementById("points").textContent = sum("y_points").toLocaleString();
+  document.getElementById("money").textContent = sum("y_money").toLocaleString();
+
+  document.getElementById("history").innerHTML =
+    rows.length ? rows.map(x =>
+      `<div class="card">
+        周回番号: ${Number(x.lap_number) || "-"}<br>
+        結果: ${escapeHtml(x.result)}<br>
+        Yポイント: ${Number(x.y_points) || 0}<br>
+        Yマネー: ${Number(x.y_money) || 0}<br>
+        アイテム: ${escapeHtml(x.items)}
+      </div>`
+    ).join("") : "まだ記録がありません";
+
+  status.textContent = "接続成功！";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "-").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[c]);
+}
+
+loadData();
+</script>
+</body>
+</html>
