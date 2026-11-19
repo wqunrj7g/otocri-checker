@@ -375,7 +375,55 @@ function escapeHtml(value) {
   })[c]);
 }
 
+async function loadErrorHistory() {
+  const list = document.getElementById("errorHistoryList");
+  const total = document.getElementById("errorHistoryTotal");
+
+  try {
+    const { data, error } = await supabase
+      .from("error_logs")
+      .select("*")
+      .order("error_at", { ascending: false });
+
+    if (error) throw error;
+
+    total.textContent = `累計 ${data.length} 回`;
+
+    if (data.length === 0) {
+      list.innerHTML = `
+        <div class="error-history-empty">
+          エラー履歴はまだありません
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = data.map(item => `
+      <div class="error-history-item">
+        <div class="error-history-info">
+          <div class="error-history-date">
+            ${escapeHtml(new Date(item.error_at).toLocaleString("ja-JP"))}
+          </div>
+          <div class="error-history-lap">
+            ${item.lap_number == null ? "周回数不明" : escapeHtml(item.lap_number + "周目")}
+          </div>
+        </div>
+        <span class="error-history-status">
+          ${escapeHtml(item.recovery_status || "未対応")}
+        </span>
+      </div>
+    `).join("");
+
+  } catch (error) {
+    console.error("エラー履歴読み込み失敗:", error);
+    list.innerHTML = `
+      <div class="error-history-empty">
+        エラー履歴を読み込めませんでした
+      </div>`;
+  }
+}
+
 loadData();
+loadErrorHistory();
 </script>
 </body>
 </html>
