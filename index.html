@@ -380,7 +380,7 @@ async function loadErrorHistory() {
   const total = document.getElementById("errorHistoryTotal");
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("error_logs")
       .select("*")
       .order("error_at", { ascending: false });
