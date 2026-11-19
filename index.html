@@ -94,6 +94,61 @@ h2 { margin: 0 0 8px; font-size: 15px; }
 @media (min-width: 520px) {
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+  .monitor-section {
+  margin: 20px 0;
+}
+
+.monitor-section h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.monitor-stat {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  background: var(--card, transparent);
+}
+
+.monitor-stat .section-label {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 9px;
+}
+
+.monitor-value {
+  font-size: 21px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.monitor-note {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 7px;
+}
+
+@media (max-width: 380px) {
+  .monitor-grid {
+    gap: 7px;
+  }
+
+  .monitor-stat {
+    padding: 11px;
+  }
+
+  .monitor-value {
+    font-size: 18px;
+  }
+}
 </style>
 </head>
 <body>
@@ -120,6 +175,29 @@ h2 { margin: 0 0 8px; font-size: 15px; }
     <div class="stat"><div class="section-label">Yマネー合計</div><div class="value" id="money">0</div></div>
   </section>
 
+  <section class="monitor-section">
+  <h2>周回・エラー状況</h2>
+  <div class="monitor-grid">
+    <div class="monitor-stat">
+      <div class="section-label">直近100周の平均</div>
+      <div class="monitor-value" id="averageLap">データ未取得</div>
+      <div class="monitor-note">100周未満は記録済み分で計算</div>
+    </div>
+    <div class="monitor-stat">
+      <div class="section-label">最後のエラー発生日時</div>
+      <div class="monitor-value" id="lastErrorAt">未記録</div>
+    </div>
+    <div class="monitor-stat">
+      <div class="section-label">エラー落ち累計</div>
+      <div class="monitor-value" id="errorCount">未取得</div>
+    </div>
+    <div class="monitor-stat">
+      <div class="section-label">現在の稼働状態</div>
+      <div class="monitor-value" id="runningStatus">状態未取得</div>
+      <div class="monitor-note">Android側との連携後に表示</div>
+    </div>
+  </div>
+</section>
   <section class="history-section">
     <h2>周回履歴</h2>
     <div id="history"><div class="empty">まだ記録がありません</div></div>
