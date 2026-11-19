@@ -149,6 +149,80 @@ h2 { margin: 0 0 8px; font-size: 15px; }
     font-size: 18px;
   }
 }
+  .error-history-section {
+  margin: 20px 0;
+}
+
+.error-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.error-history-header h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+}
+
+#errorHistoryTotal {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+#errorHistoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.error-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border, #ddd);
+}
+
+.error-history-item:last-child {
+  border-bottom: none;
+}
+
+.error-history-info {
+  min-width: 0;
+}
+
+.error-history-date {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.error-history-lap {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 5px;
+}
+
+.error-history-status {
+  font-size: 11px;
+  white-space: nowrap;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(128, 128, 128, 0.12);
+}
+
+.error-history-empty {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+}
 </style>
 </head>
 <body>
